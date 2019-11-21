@@ -1,10 +1,11 @@
+require("dotenv").config()
 const mong = require("mongoose")
 const { RichEmbed } = require("discord.js")
-const { Client } = require("discord.js-commando")
-const client = new Client({
-    owner: '131096116849672192'
+const { CommandoClient } = require("discord.js-commando")
+const client = new CommandoClient({
+  owner: "131096116849672192",
+  commandPrefix: process.env.COMMAND_PREFIX
 })
-require("dotenv").config()
 
 mong.connect(`${process.env.MONGO_HOST_URI}/squadgang_data`, {
   useNewUrlParser: true,
