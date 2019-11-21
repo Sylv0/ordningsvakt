@@ -1,4 +1,5 @@
 require("dotenv").config()
+const path = require("path")
 const mong = require("mongoose")
 const { RichEmbed } = require("discord.js")
 const { CommandoClient } = require("discord.js-commando")
@@ -18,6 +19,16 @@ const UserActivity = mong.model("user_activity", {
   month: String,
   active_time: Number
 })
+
+client.registry
+	.registerDefaultTypes()
+	.registerGroups([
+		['util', 'Utility commands for our Orwell society.'],
+		['fun', 'Fun commands with limited functionality.'],
+	])
+	.registerDefaultGroups()
+	.registerDefaultCommands()
+	.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.username}`)
