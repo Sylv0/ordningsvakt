@@ -19,4 +19,17 @@ client.on("ready", () => {
   console.log(`Logged in as ${client.user.username}`)
 })
 
+client.on("guildMemberAdd", member => {
+  console.log(`Member ${member.user.username} joined server.`)
+  member.addRole("646003405432815621")
+  const {guild} = member
+  if(guild && guild.available) {
+      const channel = guild.channels.find(ch => ch.name === "welcome")
+      if(channel){
+          channel.send(`Welcome to the gang, ${member.user.username}`)
+      }
+  }
+
+})
+
 client.login(process.env.DISCORD_BOT_TOKEN)
