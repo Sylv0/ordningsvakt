@@ -8,7 +8,8 @@
     "discord.js-commando": "^0.10.0",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.15",
-    "mongoose": "^5.7.12"
+    "mongoose": "^5.7.12",
+    "pretty-ms": "^5.0.0"
   },
   "devDependencies": {},
   "scripts": {
