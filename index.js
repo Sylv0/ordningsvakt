@@ -1,7 +1,9 @@
 const mong = require("mongoose")
 const { RichEmbed } = require("discord.js")
 const { Client } = require("discord.js-commando")
-const client = new Client()
+const client = new Client({
+    owner: '131096116849672192'
+})
 require("dotenv").config()
 
 mong.connect(`${process.env.MONGO_HOST_URI}/squadgang_data`, {
@@ -23,14 +25,13 @@ client.on("ready", () => {
 client.on("guildMemberAdd", member => {
   console.log(`Member ${member.user.username} joined server.`)
   member.addRole("646003405432815621")
-  const {guild} = member
-  if(guild && guild.available) {
-      const channel = guild.channels.find(ch => ch.name === "welcome")
-      if(channel){
-          channel.send(`Welcome to the gang, ${member.user.username}`)
-      }
+  const { guild } = member
+  if (guild && guild.available) {
+    const channel = guild.channels.find(ch => ch.name === "welcome")
+    if (channel) {
+      channel.send(`Welcome to the gang, ${member.user.username}`)
+    }
   }
-
 })
 
 client.login(process.env.DISCORD_BOT_TOKEN)
