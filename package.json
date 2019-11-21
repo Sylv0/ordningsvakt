@@ -4,6 +4,7 @@
   "description": "A bot for Squadgängets Discord server",
   "main": "index.js",
   "dependencies": {
+    "dateformat": "^3.0.3",
     "discord.js": "^11.5.1",
     "discord.js-commando": "^0.10.0",
     "dotenv": "^8.2.0",
