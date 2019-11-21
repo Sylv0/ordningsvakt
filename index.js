@@ -1,6 +1,7 @@
 const mong = require("mongoose")
-const Discord = require("discord.js")
-const client = new Discord.Client()
+const { RichEmbed } = require("discord.js")
+const { Client } = require("discord.js-commando")
+const client = new Client()
 require("dotenv").config()
 
 mong.connect(`${process.env.MONGO_HOST_URI}/squadgang_data`, {
