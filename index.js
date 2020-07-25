@@ -15,7 +15,6 @@ active_members = {};
 
 const updateTimeInterval = () => {
   const curMonth = dateformat(new Date(), "yyyy mm");
-  console.log("Test");
   const interval = setInterval(() => {
     if (!Object.keys(active_members).length) {
       console.log("Clear update interval");
