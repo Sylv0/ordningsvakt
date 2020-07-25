@@ -1,8 +1,8 @@
-const { Command } = require("discord.js-commando")
-const { RichEmbed } = require("discord.js")
-const dateformat = require("dateformat")
-const prettms = require("pretty-ms")
-const { UserActivity } = require("../../mySchema")
+const { Command } = require("discord.js-commando");
+const { RichEmbed } = require("discord.js");
+const dateformat = require("dateformat");
+const prettms = require("pretty-ms");
+const knex = require("../../db/knex");
 
 module.exports = class ActivityCommand extends Command {
   constructor(client) {
@@ -12,7 +12,7 @@ module.exports = class ActivityCommand extends Command {
       group: "util",
       memberName: "activity",
       description: "Display monthly user activity."
-    })
+    });
   }
 
   run(msg) {
@@ -21,26 +21,25 @@ module.exports = class ActivityCommand extends Command {
       .setDescription(
         "Active time(time in voice channel) for members this month."
       )
-      .setColor(0x0000ff)
+      .setColor(0x2233ff);
 
-    const curMonth = dateformat(new Date(), "yyyy mm")
+    const curMonth = dateformat(new Date(), "yyyy mm");
 
-    UserActivity.find({ month: curMonth })
-      .sort("active_time")
-      .then(res => {
-        res
-          .sort((a, b) => {
-            return b.active_time.toNumber() - a.active_time.toNumber()
-          })
-          .map(post => {
-            embed.addField(
-              post.name,
-              `${prettms(post.active_time.toNumber())}`,
-              false
-            )
-          })
-
-        return msg.embed(embed)
+    knex("user_activity")
+      .select()
+      .where({
+        month: curMonth
       })
+      .then((rows) => {
+        rows
+          .sort((a, b) => {
+            return b.active_time - a.active_time;
+          })
+          .map((row) => {
+            embed.addField(row.name, `${prettms(row.active_time)}`, false);
+          });
+
+        return msg.embed(embed);
+      });
   }
-}
+};
