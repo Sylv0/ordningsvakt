@@ -44,7 +44,8 @@ module.exports = class ActivityCommand extends Command {
     });
     Object.values(activities).map((a, index) => {
       const server = Object.keys(activities)[index];
-      embed.addField(server, generateFieldMessage(a));
+      if (!server.includes("[C] CAROLEANS"))
+        embed.addField(server, generateFieldMessage(a));
     });
     if (Object.keys(activities).length <= 0)
       embed.setDescription("Nobody is playing :(");
