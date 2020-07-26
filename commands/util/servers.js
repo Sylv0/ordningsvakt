@@ -1,6 +1,16 @@
 const { Command } = require("discord.js-commando");
 const { RichEmbed } = require("discord.js");
 
+const generateFieldMessage = (arr = []) => {
+  const sliceAmount = 3;
+  if (arr.length <= sliceAmount) return arr.join("\n");
+  else {
+    const items = arr.slice(0, sliceAmount);
+    const additonal = arr.length - sliceAmount;
+    items.push(`+ ${additonal} more`);
+  }
+};
+
 module.exports = class ActivityCommand extends Command {
   constructor(client) {
     super(client, {
@@ -34,8 +44,10 @@ module.exports = class ActivityCommand extends Command {
     });
     Object.values(activities).map((a, index) => {
       const server = Object.keys(activities)[index];
-      embed.addField(server, a.join("\n"));
+      embed.addField(server, generateFieldMessage(a));
     });
+    if (Object.keys(activities).length <= 0)
+      embed.setDescription("Nobody is playing :(");
     return msg.embed(embed);
   }
 };
