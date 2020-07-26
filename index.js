@@ -9,7 +9,7 @@ const client = new CommandoClient({
   commandPrefix: process.env.COMMAND_PREFIX
 });
 
-const knex = require("./db/knex");
+const UserActivity = require("./core/UserActivity");
 
 active_members = {};
 
@@ -22,36 +22,9 @@ const updateTimeInterval = () => {
       return;
     }
     Object.keys(active_members).map(async (id) => {
-      const curTime = new Date().getTime();
-      const { username } = await client.fetchUser(id);
-      const timeDelta = curTime - active_members[id];
-      active_members[id] = curTime;
-      const member_activity = await knex("user_activity")
-        .select()
-        .where({
-          member: id,
-          month: curMonth
-        })
-        .first();
-      if (!member_activity) {
-        await knex("user_activity").insert({
-          member: id,
-          name: username,
-          month: curMonth,
-          active_time: timeDelta
-        });
-      } else {
-        await knex("user_activity")
-          .update({
-            active_time: member_activity.active_time + timeDelta
-          })
-          .where({
-            member: id,
-            month: curMonth
-          });
-      }
+      active_members[id].insertTime();
     });
-  }, 5000);
+  }, 10000);
 };
 
 client.registry
@@ -71,42 +44,17 @@ client.on("ready", () => {
 
 client.on("voiceStateUpdate", async (before, after) => {
   try {
-    const { id, username } = after.user;
-    const curTime = new Date().getTime();
-    const curMonth = dateformat(new Date(), "yyyy mm");
+    const { id } = after.user;
     if (!before.voiceChannel && after.voiceChannel) {
-      active_members[id] = curTime;
+      const joined = new UserActivity(after.user);
+      active_members[id] = joined;
       if (Object.keys(active_members).length === 1) updateTimeInterval();
     } else if (
       before.voiceChannel &&
       !after.voiceChannel &&
       active_members[id]
     ) {
-      const timeDelta = curTime - active_members[id];
-      const member_activity = await knex("user_activity")
-        .select()
-        .where({
-          member: id,
-          month: curMonth
-        })
-        .first();
-      if (!member_activity) {
-        await knex("user_activity").insert({
-          member: id,
-          name: username,
-          month: curMonth,
-          active_time: timeDelta
-        });
-      } else {
-        await knex("user_activity")
-          .update({
-            active_time: member_activity.active_time + timeDelta
-          })
-          .where({
-            member: id,
-            month: curMonth
-          });
-      }
+      active_members[id].insertTime();
       delete active_members[id];
     }
   } catch (e) {
