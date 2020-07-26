@@ -8,6 +8,7 @@ const generateFieldMessage = (arr = []) => {
     const items = arr.slice(0, sliceAmount);
     const additonal = arr.length - sliceAmount;
     items.push(`+ ${additonal} more`);
+    return arr.join("\n");
   }
 };
 
