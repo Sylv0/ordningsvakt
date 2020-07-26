@@ -17,17 +17,23 @@ const isAfk = (voiceChannel) => {
   return voiceChannel && voiceChannel.id === voiceChannel.guild.afkChannelID;
 };
 
+let intervalRunning = false;
+
 const updateTimeInterval = () => {
-  const interval = setInterval(() => {
-    if (!Object.keys(active_members).length) {
-      console.log("Clear update interval");
-      clearInterval(interval);
-      return;
-    }
-    Object.keys(active_members).map(async (id) => {
-      active_members[id].insertTime();
-    });
-  }, 10000);
+  if (!intervalRunning && Object.keys(active_members).length) {
+    const interval = setInterval(() => {
+      if (!Object.keys(active_members).length) {
+        console.log("Clear update interval");
+        clearInterval(interval);
+        intervalRunning = false;
+        return;
+      }
+      Object.keys(active_members).map(async (id) => {
+        active_members[id].insertTime();
+      });
+    }, 10000);
+    intervalRunning = true;
+  }
 };
 
 client.registry
@@ -43,6 +49,16 @@ client.registry
 client.on("ready", () => {
   console.log(`Logged in as ${client.user.username}`);
   client.user.setActivity("you all.", { type: "WATCHING" });
+  const voiceChannels = client.channels.filter(
+    (c) => c.type === "voice" && !isAfk(c)
+  );
+  voiceChannels.map((c) => {
+    c.members.map((m) => {
+      const joined = new UserActivity(m.user);
+      active_members[m.user.id] = joined;
+    });
+  });
+  updateTimeInterval();
 });
 
 client.on("voiceStateUpdate", async (before, after) => {
