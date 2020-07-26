@@ -13,8 +13,11 @@ const UserActivity = require("./core/UserActivity");
 
 active_members = {};
 
+const isAfk = (voiceChannel) => {
+  return voiceChannel && voiceChannel.id === voiceChannel.guild.afkChannelID;
+};
+
 const updateTimeInterval = () => {
-  const curMonth = dateformat(new Date(), "yyyy mm");
   const interval = setInterval(() => {
     if (!Object.keys(active_members).length) {
       console.log("Clear update interval");
@@ -45,13 +48,17 @@ client.on("ready", () => {
 client.on("voiceStateUpdate", async (before, after) => {
   try {
     const { id } = after.user;
-    if (!before.voiceChannel && after.voiceChannel) {
+    if (
+      (isAfk(before.voiceChannel) || !before.voiceChannel) &&
+      after.voiceChannel &&
+      !isAfk(after.voiceChannel)
+    ) {
       const joined = new UserActivity(after.user);
       active_members[id] = joined;
-      if (Object.keys(active_members).length === 1) updateTimeInterval();
+      updateTimeInterval();
     } else if (
       before.voiceChannel &&
-      !after.voiceChannel &&
+      (!after.voiceChannel || isAfk(after.voiceChannel)) &&
       active_members[id]
     ) {
       active_members[id].insertTime();
