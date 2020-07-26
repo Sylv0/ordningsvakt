@@ -30,6 +30,7 @@ module.exports = class ActivityCommand extends Command {
       .where({
         month: curMonth
       })
+      .limit(25)
       .then((rows) => {
         rows
           .sort((a, b) => {
