@@ -1,6 +1,8 @@
 const { Command } = require("discord.js-commando");
 const { RichEmbed } = require("discord.js");
 
+const jslrs = require("js-longest-repeated-substring");
+
 const generateFieldMessage = (arr = []) => {
   const sliceAmount = 3;
   if (arr.length <= sliceAmount) return arr.join("\n");
@@ -10,6 +12,14 @@ const generateFieldMessage = (arr = []) => {
     items.push(`+ ${additonal} more`);
     return arr.join("\n");
   }
+};
+
+const getServerName = (text = "") => {
+  const substring = jslrs.lrs(text);
+  if (substring.length > 10) return substring.slice(4);
+  const regx = / on ([\w\W]+)/g;
+  const matches = regx.exec(text);
+  return matches[1];
 };
 
 module.exports = class ActivityCommand extends Command {
@@ -45,8 +55,9 @@ module.exports = class ActivityCommand extends Command {
     });
     Object.values(activities).map((a, index) => {
       const server = Object.keys(activities)[index];
+      const name = getServerName(server);
       if (!server.includes("[C] CAROLEANS"))
-        embed.addField(server, generateFieldMessage(a));
+        embed.addField(name, generateFieldMessage(a));
     });
     if (Object.keys(activities).length <= 0)
       embed.setDescription("Nobody is playing :(");
