@@ -90,9 +90,9 @@ client.on("guildMemberAdd", (member) => {
   member.addRole("646003405432815621");
   const { guild } = member;
   if (guild && guild.available) {
-    const channel = guild.channels.find((ch) => ch.name.includes("welcome"));
+    const channel = guild.channels.get(process.env.WELCOME_CHANNEL_ID);
     if (channel) {
-      channel.send(`Welcome to the gang, ${member.user.username}`);
+      channel.send(`Welcome to the gang, ${member.user.toString()}`);
     }
   }
 });
