@@ -87,7 +87,9 @@ client.on("voiceStateUpdate", async (before, after) => {
 
 client.on("guildMemberAdd", (member) => {
   console.log(`Member ${member.user.username} joined server.`);
-  member.addRole("646003405432815621");
+  member.addRole("646003405432815621").catch(() => {
+    console.log("Failed to add role to new member");
+  });
   const { guild } = member;
   if (guild && guild.available) {
     const channel = guild.channels.get(process.env.WELCOME_CHANNEL_ID);
