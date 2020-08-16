@@ -4,13 +4,14 @@ const { RichEmbed } = require("discord.js");
 const jslrs = require("js-longest-repeated-substring");
 
 const generateFieldMessage = (arr = []) => {
-  const sliceAmount = 3;
-  if (arr.length <= sliceAmount) return arr.join("\n");
-  else {
+  const sliceAmount = 5;
+  if (arr.length <= sliceAmount) {
+    return arr.join("\n");
+  } else {
     const items = arr.slice(0, sliceAmount);
     const additonal = arr.length - sliceAmount;
     items.push(`+ ${additonal} more`);
-    return arr.join("\n");
+    return items.join("\n");
   }
 };
 
