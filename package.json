@@ -9,7 +9,7 @@
     "discord.js-commando": "^0.10.0",
     "dotenv": "^8.2.0",
     "js-longest-repeated-substring": "^1.0.3",
-    "knex": "^0.21.2",
+    "knex": "^2.4.0",
     "lodash": "^4.17.19",
     "mongoose": "^5.9.25",
     "mongoose-long": "^0.2.1",
